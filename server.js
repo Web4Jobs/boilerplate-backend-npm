@@ -8,6 +8,7 @@
 var fs = require('fs');
 var express = require('express');
 var app = express();
+var execSync = require("child_process").execSync;
 
 if (!process.env.DISABLE_XORIGIN) {
   app.use(function(req, res, next) {
@@ -32,6 +33,16 @@ app.route('/_api/package.json')
       res.type('txt').send(data.toString());
     });
   });
+
+app.get("/_api/user-email", function (req, res) {
+  var email = "";
+  try {
+    email = execSync("git config --get user.email", { encoding: "utf8" }).trim();
+  } catch (e) {
+    email = "";
+  }
+  res.json({ email: email });
+});
   
 app.route('/')
     .get(function(req, res) {
