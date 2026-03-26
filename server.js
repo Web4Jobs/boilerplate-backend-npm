@@ -35,13 +35,21 @@ app.route('/_api/package.json')
   });
 
 app.get("/_api/user-email", function (req, res) {
-  var email = "";
-  try {
-    email = execSync("git config --get user.email", { encoding: "utf8" }).trim();
-  } catch (e) {
-    email = "";
+  let email = "";
+
+  const TEST_MAIL = process.argv.includes("--testmail");
+
+  if (TEST_MAIL) {
+    email = "fagroudfatimazahra0512@gmail.com";
+  } else {
+    try {
+      email = execSync("git config --get user.email", { encoding: "utf8" }).trim();
+    } catch (e) {
+      email = "";
+    }
   }
-  res.json({ email: email });
+
+  res.json({ email });
 });
   
 app.route('/')
